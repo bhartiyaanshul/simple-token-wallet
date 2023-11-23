@@ -11,9 +11,22 @@ const Interactions = (props) => {
 		let transferAmount = e.target.sendAmount.value;
 		let recieverAddress = e.target.recieverAddress.value;
 
-		let txt = await props.contract.transfer(recieverAddress, transferAmount);
-		console.log(txt);
-		setTransferHash("Transfer confirmation hash: " + txt.hash);
+		try {
+			let txt = await props?.contract?.transfer(recieverAddress, transferAmount);
+		
+			console.log("Response:", txt);
+		
+			if (txt && txt.hash) {
+			  console.log(txt);
+			  setTransferHash("Transfer confirmation hash: " + txt.hash);
+			} else {
+			  console.error("Error transferring coins. Response:", txt);
+			  setTransferHash("Error transferring coins. Please check the console for details.");
+			}
+		  } catch (error) {
+			console.error("Error transferring coins:", error);
+			setTransferHash("Error transferring coins. Please check the console for details.");
+		  }
 	}
 
 	return (
