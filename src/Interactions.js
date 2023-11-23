@@ -23,10 +23,10 @@ const Interactions = (props) => {
 			  console.error("Error transferring coins. Response:", txt);
 			  setTransferHash("Error transferring coins. Please check the console for details.");
 			}
-		  } catch (error) {
-			console.error("Error transferring coins:", error);
-			setTransferHash("Error transferring coins. Please check the console for details.");
-		  }
+		  	} catch (error) {
+				console.error("Error transferring coins:", error);
+				setTransferHash("Error transferring coins. Please check the console for details.");
+		  	}
 	}
 
 	return (

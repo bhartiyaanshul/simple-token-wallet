@@ -8,14 +8,14 @@ const ethers = require("ethers")
 const Wallet = () => {
 
 	// deploy simple token contract and paste deployed contract address here. This value is local ganache chain
-	let contractAddress = '0x8d905E45951613CCB861C0CD2C6966cbFa7f3E39';
+	let contractAddress = '0xFc980ED0B8a2191984D72E9D88789464C3759361';
 
 	const [errorMessage, setErrorMessage] = useState(null);
 	const [defaultAccount, setDefaultAccount] = useState(null);
 	const [connButtonText, setConnButtonText] = useState('Connect Wallet');
 
-	const [setProvider] = useState(null);
-	const [setSigner] = useState(null);
+	const [provider, setProvider] = useState(null);
+	const [signer, setSigner] = useState(null);
 	const [contract, setContract] = useState(null);
 
 	const [tokenName, setTokenName] = useState("Token");
@@ -49,7 +49,9 @@ const Wallet = () => {
 		updateEthers();
 	}
 
-	const updateBalance = async () => {
+	const updateBalance = async (defaultAccount) => {
+		console.log(contract)
+		console.log(defaultAccount)
 		let balanceBigN = await contract.balanceOf(defaultAccount);
 		let balanceNumber = balanceBigN.toNumber();
 
@@ -90,14 +92,16 @@ const Wallet = () => {
 
 	window.ethereum?.on('chainChanged', chainChangedHandler);
 
-	const updateEthers = () => {
+	const updateEthers = async () => {
 		let tempProvider = new ethers.providers.Web3Provider(window.ethereum);
 		setProvider(tempProvider);
 
-		let tempSigner = tempProvider.getSigner();
+		let tempSigner = await tempProvider.getSigner();
 		setSigner(tempSigner);
+		console.log( await tempProvider.getNetwork())
 
 		let tempContract = new ethers.Contract(contractAddress, simple_token_abi, tempSigner);
+		console.log( await tempContract.name())
 		setContract(tempContract);	
 	}
 
@@ -106,11 +110,12 @@ const Wallet = () => {
 	}
 
 	useEffect(() => {
-		if (contract != null) {
-			updateBalance();
+		console.log(defaultAccount);
+		if (contract != null && defaultAccount != null) {
+			updateBalance(defaultAccount);
 			updateTokenName();
 		}
-	}, [contract]);
+	}, [contract, defaultAccount]);
 
 
 	
